@@ -40,7 +40,22 @@ const FinalMessage = () => {
   }, []);
 
   return (
-    <div className="final-container">
+    <div className="final-container" style={{ position: 'relative', width: '100vw', minHeight: '100vh', overflow: 'hidden' }}>
+      <motion.div 
+        className="butterfly-container"
+        initial={{ left: '-10vw', top: '80vh' }}
+        animate={{ left: '110vw', top: '10vh' }}
+        transition={{ duration: 15, repeat: Infinity, repeatType: 'loop', ease: 'linear' }}
+      >
+        <div className="butterfly">
+          <div className="wing wing-left"></div>
+          <div className="butterfly-body"></div>
+          <div className="wing wing-right"></div>
+        </div>
+      </motion.div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '800px', margin: '0 auto', paddingTop: '50px' }}>
+
       <motion.div 
         className="polaroid-container"
         initial={{ y: -500, rotate: -20, opacity: 0 }}
@@ -91,6 +106,7 @@ const FinalMessage = () => {
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

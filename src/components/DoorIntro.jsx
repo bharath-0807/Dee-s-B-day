@@ -12,8 +12,14 @@ const DoorIntro = ({ onOpen }) => {
     }, 2000);
   };
 
+  const fireflies = Array.from({ length: 15 });
+
   return (
     <div className="door-container">
+      {fireflies.map((_, i) => (
+        <div key={i} className={`firefly firefly-${(i % 10) + 1}`}></div>
+      ))}
+
       <motion.div 
         className="house-wall"
         animate={isOpen ? { scale: 5, opacity: 0 } : { scale: 1, opacity: 1 }}
