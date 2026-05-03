@@ -1,36 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const TypewriterText = ({ text, delay = 0 }) => {
-  const [displayedText, setDisplayedText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
+const TypewriterPoem = ({ poem, startDelay = 0, onComplete }) => {
+  const [displayedLines, setDisplayedLines] = useState(poem.map(() => ''));
+  const [currentLine, setCurrentLine] = useState(0);
+  const [currentChar, setCurrentChar] = useState(0);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
+  // Wait for initial start delay
   useEffect(() => {
-    let timeout;
-    if (currentIndex < text.length) {
-      timeout = setTimeout(() => {
-        setDisplayedText(prev => prev + text[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, 50); 
+    const timer = setTimeout(() => setHasStarted(true), startDelay * 1000);
+    return () => clearTimeout(timer);
+  }, [startDelay]);
+
+  // Typing logic
+  useEffect(() => {
+    if (!hasStarted || isFinished) return;
+    
+    // If we've reached the end of the poem
+    if (currentLine >= poem.length) {
+      setIsFinished(true);
+      if (onComplete) onComplete();
+      return;
     }
+
+    // Special check for empty lines (stanzas)
+    if (poem[currentLine] === "") {
+      const timeout = setTimeout(() => {
+        setCurrentLine(prev => prev + 1);
+        setCurrentChar(0);
+      }, 500); // 500ms pause for empty lines
+      return () => clearTimeout(timeout);
+    }
+
+    const timeout = setTimeout(() => {
+      setDisplayedLines(prev => {
+        const newLines = [...prev];
+        newLines[currentLine] += poem[currentLine][currentChar];
+        return newLines;
+      });
+
+      if (currentChar + 1 < poem[currentLine].length) {
+        setCurrentChar(prev => prev + 1);
+      } else {
+        setCurrentLine(prev => prev + 1);
+        setCurrentChar(0);
+      }
+    }, 50); // 50ms per character
+
     return () => clearTimeout(timeout);
-  }, [currentIndex, text]);
+  }, [currentChar, currentLine, poem, hasStarted, isFinished, onComplete]);
 
   return (
-    <motion.p 
-      className="message-text typewriter"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay }}
-    >
-      {displayedText}
-      {currentIndex < text.length && <span className="cursor">|</span>}
-    </motion.p>
+    <div className="message-text typewriter" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+      {poem.map((line, index) => (
+        <p key={index} style={{ minHeight: line === "" ? '1rem' : '1.8rem', margin: '0.3rem 0', fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: '1.4rem' }}>
+          {displayedLines[index]}
+          {currentLine === index && hasStarted && !isFinished && <span className="cursor">|</span>}
+        </p>
+      ))}
+    </div>
   );
 };
 
 const FinalMessage = () => {
   const [startTyping, setStartTyping] = useState(false);
+  const [showSignature, setShowSignature] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -39,23 +75,23 @@ const FinalMessage = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const poemLines = [
+    "If I could write a song for you,",
+    "Every chord would ring so true.",
+    "Your laugh would be the sweetest rhyme,",
+    "Echoing softly through space and time.",
+    "",
+    "Like a butterfly in the morning sun,",
+    "You bring colors to everyone.",
+    "I may not say what's in my heart,",
+    "But you're my favorite piece of art. 🤍",
+    "",
+    "Happy 20th Birthday, Dee.",
+    "Keep shining, keep flying high."
+  ];
+
   return (
     <div className="final-container">
-      <motion.div 
-        initial={{ left: '-10vw', top: '80vh' }}
-        animate={{ left: '110vw', top: '10vh' }}
-        transition={{ duration: 15, repeat: Infinity, repeatType: 'loop', ease: 'linear' }}
-        style={{ position: 'fixed', zIndex: 100, pointerEvents: 'none' }}
-      >
-        <motion.div
-          animate={{ y: [0, -30, 0], x: [0, 20, 0], rotate: [-15, 15, -15] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ fontSize: '3.5rem', filter: 'drop-shadow(0 0 15px rgba(214,148,255,0.8))' }}
-        >
-          🦋
-        </motion.div>
-      </motion.div>
-
       <motion.div 
         className="polaroid-container"
         initial={{ y: -500, rotate: -20, opacity: 0 }}
@@ -82,28 +118,29 @@ const FinalMessage = () => {
             transition={{ duration: 1 }}
             style={{ fontFamily: 'Playfair Display', fontSize: '2.5rem', marginBottom: '2rem', color: 'var(--color-primary)' }}
           >
-            Happy 20th Birthday, Dee 🦋
+            A Note For You 🤍
           </motion.h2>
           
           {startTyping && (
-            <>
-              <TypewriterText text="If I had to write a song about you, the melody would just be your laugh, and the lyrics would be all the little moments that make you so effortlessly beautiful." />
-              <TypewriterText text="Like a butterfly finding its favorite flower, my days just feel brighter whenever you're around. I don't say it much, but there's a certain magic in the way you exist..." delay={8.5} />
-              <TypewriterText text="And honestly... I really love that magic. 🤍" delay={17.5} />
-              <TypewriterText text="May this year give you everything your heart wishes for. Keep smiling, keep flying high." delay={20.0} />
-              
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 25.0, duration: 2 }}
-                style={{ marginTop: '3rem' }}
-              >
-                <p className="signature">Yours truly,</p>
-                <p className="signature" style={{ marginTop: '0.5rem', fontSize: '1.5rem', color: 'var(--color-text-light)' }}>
-                  Bharath 🤍
-                </p>
-              </motion.div>
-            </>
+            <TypewriterPoem 
+              poem={poemLines} 
+              startDelay={1} 
+              onComplete={() => setShowSignature(true)}
+            />
+          )}
+
+          {showSignature && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 2 }}
+              style={{ marginTop: '3rem', textAlign: 'center' }}
+            >
+              <p className="signature" style={{ fontFamily: 'Caveat', fontSize: '1.5rem', color: '#555' }}>Yours truly,</p>
+              <p className="signature" style={{ marginTop: '0.5rem', fontFamily: 'Caveat', fontSize: '2.5rem', color: 'var(--color-text-light)' }}>
+                Bharath 🤍
+              </p>
+            </motion.div>
           )}
         </div>
       </div>
