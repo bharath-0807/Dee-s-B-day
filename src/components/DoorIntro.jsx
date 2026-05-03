@@ -15,10 +15,14 @@ const DoorIntro = ({ onOpen }) => {
   return (
     <div className="door-container">
       <motion.div 
-        className="door-wrapper"
+        className="house-wall"
         animate={isOpen ? { scale: 5, opacity: 0 } : { scale: 1, opacity: 1 }}
         transition={{ duration: 2, ease: "easeInOut" }}
       >
+        <div className="wall-lamp left">
+          <div className="lamp-light"></div>
+        </div>
+
         <div className="door-frame">
           <motion.div 
             className="door"
@@ -33,6 +37,10 @@ const DoorIntro = ({ onOpen }) => {
               <p className="door-text">Tap to Open</p>
             )}
           </motion.div>
+        </div>
+
+        <div className="wall-lamp right">
+          <div className="lamp-light"></div>
         </div>
       </motion.div>
     </div>
