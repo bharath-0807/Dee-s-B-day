@@ -72,19 +72,20 @@ const FinalMessage = () => {
           
           {startTyping && (
             <>
-              <TypewriterText text="Welcome to your twenties! I wanted to do something special for you, because you deserve nothing less." />
-              <TypewriterText text="You have this amazing energy that just makes everything better. I admire your smile, your aesthetic, and the way you see the world. It's rare to find someone who leaves such a lasting impression, but you do it effortlessly." delay={1} />
-              <TypewriterText text="May this new chapter bring you endless joy, beautiful memories, and all the success you've been working so hard for. Keep being your amazing, magical self." delay={2} />
+              <TypewriterText text="If I had to write a song about you, the melody would just be your laugh, and the lyrics would be all the little moments that make you so effortlessly beautiful." />
+              <TypewriterText text="Like a butterfly finding its favorite flower, my days just feel brighter whenever you're around. I don't say it much, but there's a certain magic in the way you exist..." delay={8.5} />
+              <TypewriterText text="And honestly... I really love that magic. 🤍" delay={17.5} />
+              <TypewriterText text="May this year give you everything your heart wishes for. Keep smiling, keep flying high." delay={20.0} />
               
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 8, duration: 2 }}
+                transition={{ delay: 25.0, duration: 2 }}
                 style={{ marginTop: '3rem' }}
               >
                 <p className="signature">Yours truly,</p>
                 <p className="signature" style={{ marginTop: '0.5rem', fontSize: '1.5rem', color: 'var(--color-text-light)' }}>
-                  Bharath 💫
+                  Bharath 🤍
                 </p>
               </motion.div>
             </>
