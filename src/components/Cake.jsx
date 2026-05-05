@@ -48,7 +48,7 @@ const Cake = ({ onBlowOut }) => {
     }
     let average = sum / bufferLength;
 
-    if (average > 60) {
+    if (average > 35) {
       setIsBlowing(true);
       setTimeout(() => {
         if (!flameBlown) {
@@ -88,7 +88,7 @@ const Cake = ({ onBlowOut }) => {
 
   return (
     <div className="cake-wrapper">
-      <div className="vector-cake">
+      <div className="vector-cake" onClick={!flameBlown ? triggerBlowOut : undefined} style={{ cursor: 'pointer' }}>
         
         {/* Tier 3 (Top) */}
         <div className="v-tier v-tier-3">
@@ -131,11 +131,9 @@ const Cake = ({ onBlowOut }) => {
       </div>
 
       <div className="instructions">
-        {micError ? (
-          <button className="blow-btn" onClick={triggerBlowOut}>Tap to blow the candles 💨</button>
-        ) : (
-          <p>Blow into your microphone to make a wish 💨</p>
-        )}
+        <p style={{ cursor: 'pointer' }} onClick={!flameBlown ? triggerBlowOut : undefined}>
+          Blow into your microphone <br/>(or tap the cake) to make a wish 💨
+        </p>
       </div>
     </div>
   );
